@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>so change, much dynamic</title>
+    <style>
+        <!--#include virtual="style.css" -->
+    </style>
+  </head>
+  <body>
+    <pre id="uploadStatus"></pre>
+
+    <form enctype="multipart/form-data" id="bitchForm" action="submit.cgi" method="POST">
+      Your Bitch Name: <input type="text" name="name"/><br />
+      What did you do?: <input type="text" name="story"/><br />
+
+      Pics or it didn't happen: [It didn't happen]
+      <input type="submit" value="Submit" />
+    </form>
+    <script>
+        <!--#include virtual="script.js" -->
+    </script>
+  </body>
+</html>
