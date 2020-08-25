@@ -1,55 +1,52 @@
 #!/usr/bin/python3
 
-# import sys, os
-# with open("submit_request_raw_data", "wb") as f:
-#     f.write("{}\nbody:\n".format(os.environ['CONTENT_TYPE']).encode('utf-8'))
-#     f.write(sys.stdin.buffer.read())
-# print("Content-type: application/octet-stream\r\n\r\n")
-# sys.exit()
+import cgi, sys, sqlite3
+from functools import reduce
 
-# import sys
-# import email.parser
+def log(s):
+    with open("log", "a") as f:
+        f.write(s + "\n")
 
-# input_data = sys.stdin.buffer.read()
-# with open("data", "wb") as f:
-#     # f.write(input_data)
-#     msg = email.parser.BytesParser().parsebytes(input_data)
-#     f.write(str.encode("payload type: {}\n".format(type(msg.get_payload()))))
-#     f.write(str.encode("decoded payload len: {}\n".format(len(msg.get_payload(decode=True)))))
-#     f.write(str.encode("payload len: {}\n".format(len(msg.get_payload()))))
-#     f.write(str.encode("multipart: {}\n".format((msg.is_multipart()))))
-#     f.write(str.encode("payload:\n{}".format(msg.get_payload())))
-#     #f.write(str.encode("raw input data:\n{}".format(input_data))
-#     # print({
-#     #     part.get_param('name', header='content-disposition'): part.get_payload(decode=True)
-#     #     for part in msg.get_payload()
-#     # })
+def setup_tables(conn):
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS post (
+            id                      INTEGER PRIMARY KEY,
+            upload_time_unix_ms     REAL NOT NULL,
+            author                  TEXT,
+            text                    TEXT)''')
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS post_image (
+            id          INTEGER PRIMARY KEY,
+            post_id     INTEGER NOT NULL)''')
 
-# Import modules for CGI handling
-import cgi, cgitb
-import sys
-# import cgitb; cgitb.enable()
+def save_data(author, text, imgs):
+    with sqlite3.connect('../data/data.sqlite') as conn:
+        setup_tables(conn)
+        c = conn.cursor()
+        c.execute('''
+            INSERT INTO post (author, text, upload_time_unix_ms)
+            VALUES (?, ?, CAST((strftime('%s','now') || substr(strftime('%f','now'), 4)) AS INTEGER))''',
+            (author, text))
+        post_id = c.lastrowid
+        for img in imgs:
+            c.execute("INSERT INTO post_image (post_id) VALUES (?)", (post_id,))
+            img_filename = c.lastrowid
+            with open("images/" + str(img_filename), "wb") as f: f.write(img)
+        conn.commit()
 
-# Create instance of FieldStorage
-form = cgi.FieldStorage()
+def get_data():
+    form = cgi.FieldStorage()
+    author = form.getfirst("author")
+    text = form.getfirst("text")
+    imgs = reduce(list.__add__, [form.getlist(k) for k in form if k.startswith("img")], [])
+    return (author, text, imgs)
 
-# Get data from fields
-name = form.getvalue('name')
-story = form.getvalue('story')
+print("Content-type: application/octet-stream\r\n\r\n", end="")
+with open("log", "w") as f: f.write("")
 
-with open("log", "wb") as f:
-    f.write("{}".format(form.keys()).encode('utf-8'))
-    # fileitem = form.getvalue('file')
-    # if fileitem.filename:
-    #     f.write(fileitem.filename)
-    # else:
-    #     f.write(b'No file was uploaded')
+author, text, imgs = get_data()
+save_data(author, text, imgs)
 
-with open("data2", "wb") as f:
-    # f.write(input_data)
-    # msg = email.parser.BytesParser().parsebytes(input_dat
-    f.write(str.encode("NAME: {}<br/>\n".format(name)))
-    f.write(str.encode("STORY: {}\n".format(story)))
-
-
-print("Content-type: application/octet-stream\r\n\r\n")
+log("author: {}".format(author))
+log("text: {}".format(text))
+log("#imgs: {}".format(len(imgs)))

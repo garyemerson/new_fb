@@ -1,64 +1,79 @@
 "use strict";
-var xhrGlobal = null;
-function formData(files, postText) {
-    var formData = new FormData();
+
+// TODO:
+// - "for day" input and column in sql table
+// - add ability to preview select pictures
+// - view "day: 8/1/2020", "posted on: 8/4/2020"
+// ---
+// - keep create time to be start of draft? Create post time column too?
+// - auto save new text or new photos
+//      - what will with loaded photos look like? Make separate area for draft photo list and preview?
+// - add url param for user that will auto select author and populate draft. Useful for bookmarking
+// - draft status column in sql table
+// - auto populate textarea when author chosen from dropdown
+//      - disable textarea
+//      - display "loading..."
+//      - populate with content
+//      - re-enable
+
+function formData(author, files, postText) {
+    let formData = new FormData();
+    formData.append("author", author);
     formData.append("text", postText);
-    for (var i = 0; i < files.length; i++) {
-        var f = files.item(i);
-        // let metaJsonStr = JSON.stringify({
-        //   lastModified: f.lastModified,
-        //   lastModifiedDate: (<any>f)["lastModifiedDate"]?.valueOf(),
-        //   name: f.name,
-        //   webkitRelativePath: (<any>f)["webkitRelativePath"] as string,
-        //   size: f.size,
-        //   type: f.type});
-        // formData.append(`meta${i}`, metaJsonStr);
-        formData.append("img" + i, f);
+    for (let i = 0; i < files.length; i++) {
+        formData.append("img" + i, files.item(i));
     }
     return formData;
 }
-function fileUploadClickHandler() {
+
+function submitHandler() {
     document.getElementById("uploadStatus").innerHTML = "starting...";
-    // document.getElementById("uploadStatus").className = "loading";
-    var fileInput = document.getElementById("fileInput");
-    var postText = document.getElementById("postText").value;
+
+    let author;
+    if (document.getElementById("author").value && document.getElementById("author").value.length > 0) {
+        author = document.getElementById("author").value;
+    } else {
+        author = document.getElementById("author-select").value;
+    }
+    let fileInput = document.getElementById("fileInput");
+    let postText = document.getElementById("postText").value;
     console.log("files:", fileInput.files);
-    var xhr = new XMLHttpRequest();
-    xhrGlobal = xhr;
+    
+    let xhr = new XMLHttpRequest();
     xhr.upload.addEventListener('progress', function handleEvent(e) {
-        console.log("lengthComputable: " + e.lengthComputable + ", loaded: " + e.loaded + ", total: " + e.total);
-        console.log("" + e.loaded / e.total);
-        var percentStr = (100 * e.loaded / e.total).toFixed(2) + "%";
+        console.log("lengthComputable: " + e.lengthComputable + ", loaded: " + e.loaded + ", total: " + e.total + "(" + e.loaded / e.total + ")");
+        let percentStr = (100 * e.loaded / e.total).toFixed(2) + "%";
         document.getElementById("uploadStatus").innerHTML = percentStr;
     });
-    xhr.onreadystatechange = function () {
-        console.log("onreadystatechange");
-        if (this.readyState !== XMLHttpRequest.DONE) {
-            return;
-        }
-        // document.getElementById("uploadStatus").className = "";
-        if (this.status === 200) {
-            console.log("POST succeeded");
-            document.getElementById("uploadStatus").innerHTML = "Upload successful!";
-        }
-        else {
-            console.log("POST failed");
-            document.getElementById("uploadStatus").innerHTML = "Upload failed!";
-        }
+    xhr.onload = () => {
+        console.log("POST succeeded");
+        document.getElementById("uploadStatus").innerHTML = "Upload successful!";
     };
-    // xhr.setRequestHeader("Content-Type", "multipart/form-data");
-    xhr.open("POST", "submit.cgi", true);
-    // xhr.send(postText);
-    xhr.send(formData(fileInput.files, postText));
-    // xhr.send(formData(fileInput.files!, postText));
+    xhr.onerror = xhr.onabort = () => {
+        console.log("POST failed");
+        document.getElementById("uploadStatus").innerHTML = "Upload failed!";
+    };
+    xhr.open("POST", "submit.cgi");
+    xhr.send(formData(author, fileInput.files, postText));
 }
+
+function authorSelectChange() {
+    let postText = document.getElementById("postText");
+    postText.disabled = true;
+    postText.value = "loading...";
+    let xhr = new XMLHttpRequest();
+    xhr.onload = (e) => postText.value = xhr.response;
+    xhr.onerror = xhr.onabort = (e) => console.log("getting draft failed:", e);
+    xhr.onloadend = () => postText.disabled = false;
+    xhr.open("GET", "/erryday/prototype/get_draft.cgi");
+    xhr.send();
+}
+
 window.onload = function () {
-    document.getElementById("submitButton").onclick = fileUploadClickHandler;
+    document.getElementById("submitButton").onclick = submitHandler;
+    //document.getElementById("author-select").onchange = authorSelectChange;
 };
-$("#bitchForm").submit(function (e) {
-    e.preventDefault();
-    var form = $(this);
-    var url = form.attr("action");
-    $.post(url, form.serialize());
-    $("#uploadStatus").html("Upload successful!");
+
+$(function(){
+    $("#navbar").load("../navbar.html");
 });
