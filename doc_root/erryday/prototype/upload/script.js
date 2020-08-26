@@ -1,7 +1,6 @@
 "use strict";
 
 // TODO:
-// - "for day" input and column in sql table
 // - add ability to preview select pictures
 // - view "day: 8/1/2020", "posted on: 8/4/2020"
 // ---
@@ -16,9 +15,10 @@
 //      - populate with content
 //      - re-enable
 
-function formData(author, files, postText) {
+function formData(author, date, files, postText) {
     let formData = new FormData();
     formData.append("author", author);
+    formData.append("date", date);
     formData.append("text", postText);
     for (let i = 0; i < files.length; i++) {
         formData.append("img" + i, files.item(i));
@@ -35,6 +35,7 @@ function submitHandler() {
     } else {
         author = document.getElementById("author-select").value;
     }
+    let date = document.getElementById("date").value;
     let fileInput = document.getElementById("fileInput");
     let postText = document.getElementById("postText").value;
     console.log("files:", fileInput.files);
@@ -45,16 +46,22 @@ function submitHandler() {
         let percentStr = (100 * e.loaded / e.total).toFixed(2) + "%";
         document.getElementById("uploadStatus").innerHTML = percentStr;
     });
+    onerror = () => {
+        let errorDetail = xhr.responseText ? `: ${xhr.responseText}` : ""
+        console.log("POST failed" + errorDetail);
+        document.getElementById("uploadStatus").innerHTML = "Upload failed" + errorDetail;
+    };
     xhr.onload = () => {
-        console.log("POST succeeded");
-        document.getElementById("uploadStatus").innerHTML = "Upload successful!";
+        if (xhr.status === 200) {
+            console.log("POST succeeded with status:", xhr.status);
+            document.getElementById("uploadStatus").innerHTML = "Upload successful!";
+        } else {
+            onerror();
+        }
     };
-    xhr.onerror = xhr.onabort = () => {
-        console.log("POST failed");
-        document.getElementById("uploadStatus").innerHTML = "Upload failed!";
-    };
+    xhr.onerror = xhr.onabort = onerror;
     xhr.open("POST", "submit.cgi");
-    xhr.send(formData(author, fileInput.files, postText));
+    xhr.send(formData(author, date, fileInput.files, postText));
 }
 
 function authorSelectChange() {
@@ -73,7 +80,3 @@ window.onload = function () {
     document.getElementById("submitButton").onclick = submitHandler;
     //document.getElementById("author-select").onchange = authorSelectChange;
 };
-
-$(function(){
-    $("#navbar").load("../navbar.html");
-});

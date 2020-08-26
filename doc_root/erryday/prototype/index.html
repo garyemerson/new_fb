@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script><!--#include virtual="script.js" --></script>
     <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Testing, bitch</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Bitch</title>
   </head>
   <body>
-    <!--#exec cmd="exec ./testing.py"-->
+    <!--#include virtual="./navbar.html"-->
+    <!--#exec cmd="exec ./generate_feed_view.py"-->
   </body>
 </html>

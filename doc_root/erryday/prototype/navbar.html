@@ -1,0 +1,58 @@
+<style>
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+</style>
+
+<div id="navbar" class="topnav">
+  <a href="/erryday/prototype">Home</a>
+  <a href="/erryday/prototype/upload">Upload</a>
+  <a href="https://www.dictionary.com/browse/bitch">Bitch</a>
+  <a href="https://www.dictionary.com/browse/bitch">Ryan</a>
+  <a href="http://unkdir.com/aboutus/">About Us</a>
+</div>
+
+<!-- This doesnt work yet -->
+<script>
+  var navbar = document.getElementById("navbar");
+  var offsetPostition = navbar.offsetTop;
+
+  function applyStickyNav() {
+    if (window.pageYOffset >= offsetPostition) {
+      navbar.classList.add("sticky");
+    } else {
+      navbar.classList.remove("sticky");
+    }
+  }
+
+  window.onscroll = function() {
+    //applyStickyNav()
+  };
+</script>
