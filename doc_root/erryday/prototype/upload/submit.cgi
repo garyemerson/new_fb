@@ -36,6 +36,7 @@ def save_data(author, date, text, imgs):
             with open("images/" + str(img_filename), "wb") as f: f.write(img)
         conn.commit()
 
+# return error str if bad date, None if good date
 def valid_date(date_str):
     if not re.match(r"^\d\d\d\d-\d\d-\d\d$", date_str):
         return "date must be of form XXXX-XX-XX, found {}".format(date_str)

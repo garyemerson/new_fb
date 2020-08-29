@@ -1,32 +1,62 @@
 #!/usr/bin/python3
 
 import sys
+import os
 sys.path.insert(1, '/home/app/doc_root/erryday/prototype/data')
 import records_helper #TODO: A better way to manage imports?
 
 import json
 from dominate.tags import *
 
+def get_records_list():
+    query_string = os.environ.get("QUERY_STRING")
+    if query_string:
+        #is there some kind of library that we can use to parse the query params?
+        qslist = query_string.split("=") #fix this
+        author = qslist[1] #fix this
+        return records_helper.retrieve_records_by_author(author)
+    return records_helper.retrieve_records()
+
 def generate_feed_view(feed_div):
-    records_list = records_helper.retrieve_records()
-    for record in records_list:
+    records_list = get_records_list()
+    if not records_list:
         with feed_div:
-            generate_post_div(record)
+            div("No entries found", cls="user-post")
+    else:
+        for record in records_list:
+            with feed_div:
+                generate_post_div(record)
 
 def generate_post_div(post):
-    post_div = div(id=post['id'], cls="userPost")
+    post_div = div(id=post['id'], cls="user-post")
     with post_div:
         header_div = div()
         with header_div:
-            span(post['author'], cls="userName")
-            span(post['timestamp'], cls="postDate")
+            link = "/erryday/prototype?user=" + post['author'] #use some kind of url builder lib?
+            a(span(post['author'], cls="header author"), href=link)
+            span(post['day'], cls="header post-date")
+        
         br()
-        p(post['text'])
+        
+        content_div = div()
+        with content_div:
+            p(post['text'])
+        
+        footer_div = div()
+        with footer_div:
+            span("Add stuff for interaction here?", cls="footer")
+            span(post['timestamp'], cls="footer timestamp")
+
     return post_div
 
-feed_div = div(id='feed')
+feed_div = div(id='feed', cls="feed-view")
 generate_feed_view(feed_div)
 print(feed_div)
+qs = os.environ.get("QUERY_STRING")
+print(qs)
+
+
+# Why are you commenting on commented out code?
 
 # Why is there commented out code here???
 # Please add comments to your commented out code

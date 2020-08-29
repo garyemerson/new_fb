@@ -7,3 +7,7 @@ $("#bitchForm").submit(function (e) {
     $.post(url, form.serialize());
     $("#uploadStatus").html("Upload successful!");
 });
+
+$(function(){
+    $("#navbar").load("../prototype/navbar.html");
+});

@@ -51,6 +51,9 @@ function submitHandler() {
         console.log("POST failed" + errorDetail);
         document.getElementById("uploadStatus").innerHTML = "Upload failed" + errorDetail;
     };
+    //xhr.onloadend = () => {
+    //    if (xhr.status === 200) {
+    //};
     xhr.onload = () => {
         if (xhr.status === 200) {
             console.log("POST succeeded with status:", xhr.status);
