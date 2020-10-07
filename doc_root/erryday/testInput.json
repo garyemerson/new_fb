@@ -1,0 +1,54 @@
+{
+    "users": [
+        {
+            "name":"Masaya",
+            "entries":[
+                {
+                    "date":"08-01-2020",
+                    "content":"Today I had an accident and pooped my pants. Overall pretty meh day.",
+                    "images":["https://cdn.shopify.com/s/files/1/1061/1924/products/Poop_Emoji_7b204f05-eec6-4496-91b1-351acc03d2c7_grande.png?v=1571606036"]
+                }
+            ]
+        },
+        {
+            "name":"Ryan",
+            "entries":[
+                {
+                    "date":"08-01-2020",
+                    "content":"Today I purposefully pooped my pants. Overall great day.",
+                    "images":["https://cdn.shopify.com/s/files/1/1061/1924/products/Poop_Emoji_7b204f05-eec6-4496-91b1-351acc03d2c7_grande.png?v=1571606036"]
+                }
+            ]
+        },
+        {
+            "name":"Michelle",
+            "entries":[
+                {
+                    "date":"08-01-2020",
+                    "content":"Today my intern fucked up and said some more stupid shit. Overall terrible day.",
+                    "images":["https://cdn.shopify.com/s/files/1/1061/1924/files/6_cc0e0b6b-4b8c-4b52-ba5d-e8da39abe776_70x70.png?10625385272054259166"]
+                }
+            ]
+        },
+        {
+            "name":"Garrett",
+            "entries":[
+                {
+                    "date":"08-01-2020",
+                    "content":"Today I climbed mount Hood and felt like a boss. Overall awesome day.",
+                    "images":["https://cdn.shopify.com/s/files/1/1061/1924/products/Flexed_Biceps_Emoji_Icon_ios10_70x70.png?v=1511943168"]
+                }
+            ]
+        },
+        {
+            "name":"Blake",
+            "entries":[
+                {
+                    "date":"08-01-2020",
+                    "content":"Today I bailed on all of my cool friends. Overall felt like shit.",
+                    "images":["https://cdn.shopify.com/s/files/1/1061/1924/products/Middle_Finger_Emoji_Icon_ios10.png?v=1511943161"]
+                }
+            ]
+        }
+    ]
+}

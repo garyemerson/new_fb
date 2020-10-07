@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script><!--#include virtual="script.js" --></script>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Bitch</title>
+  </head>
+  <body>
+    <!--#include virtual="./navbar.html"-->
+    <div id="filter" class="filter">
+      <div id="filter-date-select" class="filter-component">
+        <input type="date" id="date" name="date" style="font-size: 16px; height: 30px;">
+      </div>
+      <!-- <div id="filter-name-select" class="filter-component">
+        <input type="text" id="author" placeholder="name" style="width: 90px; font-size: 16px; height: 28px;"/>
+      </div> -->
+      <div id="filter-execution" class="filter-component">
+        <button id="filter-button" style="height: 34px;">filter</button>
+      </div>
+    </div>
+    <!--#exec cmd="exec ./generate_feed_view.py"-->
+    <!--#exec cmd="exec ./list_posts.cgi"-->
+  </body>
+</html>
